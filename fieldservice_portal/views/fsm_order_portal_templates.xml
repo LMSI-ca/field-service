@@ -1,0 +1,101 @@
+<odoo>
+
+    <template id="portal_fsm_orders" name="Field Service Orders" inherit_id="portal.portal_my_home">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="title">Field Service Orders</t>
+                <t t-set="url" t-value="'/my/fsm_orders'" />
+                <t t-set="placeholder_count" t-value="'fsm_order_count'" />
+            </t>
+        </xpath>
+    </template>
+
+
+    <template id="portal_my_fsm_orders" name="My FSM Orders">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs" t-value=" [{'name': 'My FSM orders', 'url': '/my/fsm_orders'}]" />
+            <div class="o_portal_my_orders">
+                <t t-if="orders">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Stage</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="orders" t-as="order">
+                                    <td>
+                                        <a t-attf-href="/my/fsm_orders/#{order.id}">
+                                            <t t-esc="order.name" />
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <span t-field="order.stage_id.name" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+                <t t-else="">
+                    <p>No orders available.</p>
+                </t>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_my_fsm_order" name="My FSM Order" inherit_id="portal.portal_sidebar"
+        primary="True">
+        <xpath expr="//div[hasclass('o_portal_sidebar')]" position="inside">
+            <t t-set="o_portal_fullwidth_alert" groups="project.group_project_user">
+                <t t-call="portal.portal_back_in_edit_mode">
+                    <t t-set="backend_url"
+                        t-value="'/web#model=fsm.order&amp;id=%s&amp;action=%s&amp;view_type=form' % (order.id, 226)" />
+                </t>
+            </t>
+            <div class="o_project_portal_sidebar">
+                <h2>
+                    <strong>Ref:</strong>
+                    <span t-field="order.name" />
+                </h2>
+                <p>
+                    <strong>Cliente:</strong>
+                    <span t-field="order.project_id.partner_id.name" />
+                </p>
+                <p>
+                    <strong>Tipo:</strong>
+                    <span t-field="order.type" />
+                </p>
+                <p>
+                    <strong>Atividade:</strong>
+                    <span t-field="order.project_task_id.name" />
+                </p>
+                <p>
+                    <strong>Stage:</strong>
+                    <span t-field="order.stage_id.name" />
+                </p>
+                <p>
+                    <strong>Description:</strong>
+                </p>
+                <div t-field="order.description" />
+            </div>
+
+        </xpath>
+    </template>
+
+
+    <template id="portal_breadcrumbs" inherit_id="portal.portal_breadcrumbs">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'orders'" class="breadcrumb-item active">FSM Orders</li>
+            <li t-if="page_name == 'fsm order'" class="breadcrumb-item active">
+                <a
+                    t-attf-href="/my/fsm_orders/?{{ keep_query() }}">
+                    FSM Orders /
+                </a> Arrumar</li>
+
+        </xpath>
+    </template>
+
+</odoo>
